@@ -43,19 +43,14 @@ public class FaceTracking {
     public  void FaceTrackingInit(byte[] data , int height,int width)
     {
         initTracking(data,height,width,session);
-
     }
 
     public void Update(byte[] data , int height,int width)
     {
-
-
         update(data,height,width,session);
         int numsFace = getTrackingNum(session);
         faces.clear();
         Log.d("numsFace_tracking",numsFace+"");
-
-
         for(int i = 0 ; i < numsFace ; i++) {
            int[] landmarks = getTrackingLandmarkByIndex( i,session);
             int[] faceRect = getTrackingLocationByIndex( i,session);

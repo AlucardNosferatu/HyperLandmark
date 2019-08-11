@@ -35,6 +35,10 @@ import zeusees.tracking.Face;
 import zeusees.tracking.FaceTracking;
 
 public class MainActivity extends AppCompatActivity {
+    private String[] denied;
+    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+    private FaceTracking mMultiTrack106 = null;
+    private boolean mTrack106 = false;
 
     public void copyFilesFromAssets(Context context, String oldPath, String newPath) {
         try {
@@ -71,22 +75,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void InitModelFiles()
-    {
-
+    void InitModelFiles(){
         String assetPath = "ZeuseesFaceTracking";
         String sdcardPath = Environment.getExternalStorageDirectory()
                 + File.separator + assetPath;
         copyFilesFromAssets(this, assetPath, sdcardPath);
 
     }
-
-
-    private String[] denied;
-    private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
-
-    private FaceTracking mMultiTrack106 = null;
-    private boolean mTrack106 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +106,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             init();
         }
-
-
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 5) {
@@ -144,23 +138,58 @@ public class MainActivity extends AppCompatActivity {
     private byte[] mNv21Data;
     private CameraOverlap cameraOverlap;
     private final Object lockObj = new Object();
-
     private SurfaceView mSurfaceView;
-
     private EGLUtils mEglUtils;
     private GLFramebuffer mFramebuffer;
     private GLFrame mFrame;
     private GLPoints mPoints;
     private GLBitmap mBitmap;
-
     private SeekBar seekBarA;
     private SeekBar seekBarB;
     private SeekBar seekBarC;
+
+    public static byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
+        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+        int i = 0;
+        for (int x = 0; x < imageWidth; x++) {
+            for (int y = imageHeight - 1; y >= 0; y--) {
+                yuv[i] = data[y * imageWidth + x];
+                i++;
+            }
+        }
+        i = imageWidth * imageHeight * 3 / 2 - 1;
+        for (int x = imageWidth - 1; x > 0; x = x - 2) {
+            for (int y = 0; y < imageHeight / 2; y++) {
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
+                i--;
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth)
+                        + (x - 1)];
+                i--;
+            }
+        }
+        return yuv;
+    }
+
+    private static byte[] rotateYUV420Degree180(byte[] data, int imageWidth, int imageHeight) {
+        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+        int i = 0;
+        int count = 0;
+        for (i = imageWidth * imageHeight - 1; i >= 0; i--) {
+            yuv[count] = data[i];
+            count++;
+        }
+        i = imageWidth * imageHeight * 3 / 2 - 1;
+        for (i = imageWidth * imageHeight * 3 / 2 - 1; i >= imageWidth
+                * imageHeight; i -= 2) {
+            yuv[count++] = data[i - 1];
+            yuv[count++] = data[i];
+        }
+        return yuv;
+    }
+
     private void init(){
         InitModelFiles();
-
         mMultiTrack106 = new FaceTracking("/sdcard/ZeuseesFaceTracking/models");
-
         cameraOverlap = new CameraOverlap(this);
         mNv21Data = new byte[CameraOverlap.PREVIEW_WIDTH * CameraOverlap.PREVIEW_HEIGHT * 2];
         mFramebuffer = new GLFramebuffer();
@@ -175,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPreviewFrame(byte[] data, Camera camera) {
                 synchronized (lockObj) {
                     System.arraycopy(data, 0, mNv21Data, 0, data.length);
+                    mNv21Data=rotateYUV420Degree90(mNv21Data,cameraOverlap.PREVIEW_WIDTH,cameraOverlap.PREVIEW_HEIGHT);
                 }
                 mHandler.post(new Runnable() {
                     @Override
@@ -185,15 +215,13 @@ public class MainActivity extends AppCompatActivity {
                         mFrame.setS(seekBarA.getProgress()/100.0f);
                         mFrame.setH(seekBarB.getProgress()/360.0f);
                         mFrame.setL(seekBarC.getProgress()/100.0f - 1);
-
                         if(mTrack106){
-                            mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
+                            mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
                             mTrack106 = !mTrack106;
                         }else {
-                            mMultiTrack106.Update(mNv21Data, CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
+                            mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
                         }
                         boolean rotate270 = cameraOverlap.getOrientation() == 270;
-
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
                         float[] p = null;
                         float[] points = null;
@@ -202,12 +230,15 @@ public class MainActivity extends AppCompatActivity {
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
                             for(int i = 0 ; i < 106 ; i++) {
                                 int x;
+                                int y;
+
                                 if (rotate270) {
-                                    x = r.landmarks[i*2];
+                                    y = r.landmarks[i*2];
                                 }else{
-                                    x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2];
+                                    y = CameraOverlap.PREVIEW_WIDTH-r.landmarks[i*2];
                                 }
-                                int y = r.landmarks[i*2+1];
+                                x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2+1];
+
                                 points[i*2] = view2openglX(x,CameraOverlap.PREVIEW_HEIGHT);
                                 points[i*2+1] = view2openglY(y,CameraOverlap.PREVIEW_WIDTH);
                                 if(i == 70){
