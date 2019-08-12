@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean landscape = false;
     private SensorManager SM;
 
+    public int x;
+    public int y;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //判断传感器类别
+        //判断传感器类别(deprecated)
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ORIENTATION:
                 if(event.values[1]>0) landscape = true;
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         cameraOverlap.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
-
                 synchronized (lockObj) {
                     System.arraycopy(data, 0, mNv21Data, 0, data.length);
                     if(landscape){
@@ -172,20 +174,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         mFrame.setH(seekBarB.getProgress()/360.0f);
                         mFrame.setL(seekBarC.getProgress()/100.0f - 1);
                         if(mTrack106){
-                            if(landscape){
-                                mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
-                            }
-                            else{
-                                mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
-                            }
+                            if(landscape) mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            else mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
                             mTrack106 = !mTrack106;
                         }else {
-                            if(landscape){
-                                mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
-                            }
-                            else{
-                                mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
-                            }
+                            if(landscape) mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            else mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
                         }
                         boolean rotate270 = cameraOverlap.getOrientation() == 270;
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
@@ -195,36 +189,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             points = new float[106*2];
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
                             for(int i = 0 ; i < 106 ; i++) {
-                                int x;
-                                int y;
-                                if(landscape){
-                                    if (rotate270) {
-                                        y = r.landmarks[i*2];
-                                    }else{
-                                        y = CameraOverlap.PREVIEW_WIDTH-r.landmarks[i*2];
+                                if(i==72||i==105){
+
+                                    if (landscape) {
+                                        if (rotate270) y = r.landmarks[i * 2];
+                                        else y = CameraOverlap.PREVIEW_WIDTH - r.landmarks[i * 2];
+                                        x = CameraOverlap.PREVIEW_HEIGHT - r.landmarks[i * 2 + 1];
+                                    } else {
+                                        if (rotate270) x = r.landmarks[i * 2];
+                                        else x = CameraOverlap.PREVIEW_HEIGHT - r.landmarks[i * 2];
+                                        y = r.landmarks[i * 2 + 1];
                                     }
-                                    x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2+1];
-                                }
-                                else{
-                                    if (rotate270) {
-                                        x = r.landmarks[i*2];
-                                    }else{
-                                        x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2];
+
+                                    points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                    points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+                                    if (i == 70) {
+                                        p = new float[8];
+                                        p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[1] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[2] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[3] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[4] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[5] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[6] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
                                     }
-                                    y = r.landmarks[i*2+1];
-                                }
-                                points[i*2] = view2openglX(x,CameraOverlap.PREVIEW_HEIGHT);
-                                points[i*2+1] = view2openglY(y,CameraOverlap.PREVIEW_WIDTH);
-                                if(i == 70){
-                                    p = new float[8];
-                                    p[0] = view2openglX(x + 20,CameraOverlap.PREVIEW_HEIGHT);
-                                    p[1] = view2openglY(y - 20,CameraOverlap.PREVIEW_WIDTH);
-                                    p[2] = view2openglX(x - 20,CameraOverlap.PREVIEW_HEIGHT);
-                                    p[3] = view2openglY(y - 20,CameraOverlap.PREVIEW_WIDTH);
-                                    p[4] = view2openglX(x + 20,CameraOverlap.PREVIEW_HEIGHT);
-                                    p[5] = view2openglY(y + 20,CameraOverlap.PREVIEW_WIDTH);
-                                    p[6] = view2openglX(x - 20,CameraOverlap.PREVIEW_HEIGHT);
-                                    p[7] = view2openglY(y + 20,CameraOverlap.PREVIEW_WIDTH);
                                 }
                             }
                             if(p != null){
