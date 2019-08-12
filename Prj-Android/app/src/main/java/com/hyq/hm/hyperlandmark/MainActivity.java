@@ -3,9 +3,14 @@ package com.hyq.hm.hyperlandmark;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
@@ -34,58 +39,35 @@ import java.util.List;
 import zeusees.tracking.Face;
 import zeusees.tracking.FaceTracking;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private String[] denied;
     private String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
     private FaceTracking mMultiTrack106 = null;
     private boolean mTrack106 = false;
 
-    public void copyFilesFromAssets(Context context, String oldPath, String newPath) {
-        try {
-            String[] fileNames = context.getAssets().list(oldPath);
-            if (fileNames.length > 0) {
-                // directory
-                File file = new File(newPath);
-                if (!file.mkdir())
-                {
-                    Log.d("mkdir","can't make folder");
+    private HandlerThread mHandlerThread;
+    private Handler mHandler;
+    private byte[] mNv21Data;
+    private CameraOverlap cameraOverlap;
+    private final Object lockObj = new Object();
+    private SurfaceView mSurfaceView;
+    private EGLUtils mEglUtils;
+    private GLFramebuffer mFramebuffer;
+    private GLFrame mFrame;
+    private GLPoints mPoints;
+    private GLBitmap mBitmap;
+    private SeekBar seekBarA;
+    private SeekBar seekBarB;
+    private SeekBar seekBarC;
 
-                }
-
-                for (String fileName : fileNames) {
-                    copyFilesFromAssets(context, oldPath + "/" + fileName,
-                            newPath + "/" + fileName);
-                }
-            } else {
-                // file
-                InputStream is = context.getAssets().open(oldPath);
-                FileOutputStream fos = new FileOutputStream(new File(newPath));
-                byte[] buffer = new byte[1024];
-                int byteCount;
-                while ((byteCount = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, byteCount);
-                }
-                fos.flush();
-                is.close();
-                fos.close();
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    void InitModelFiles(){
-        String assetPath = "ZeuseesFaceTracking";
-        String sdcardPath = Environment.getExternalStorageDirectory()
-                + File.separator + assetPath;
-        copyFilesFromAssets(this, assetPath, sdcardPath);
-
-    }
+    private boolean landscape = false;
+    private float[] gravity = new float[3];
+    private SensorManager SM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SM =(SensorManager)getSystemService(Context.SENSOR_SERVICE);
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ArrayList<String> list = new ArrayList<>();
@@ -109,6 +91,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        //注册加速度传感器
+//        SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_UI);//采集频率
+//        //注册重力传感器
+//        SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_GRAVITY),SensorManager.SENSOR_DELAY_FASTEST);
+        SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SM.unregisterListener((SensorEventListener) this);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 5) {
             boolean isDenied = false;
@@ -123,68 +121,46 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (isDenied) {
-                Toast.makeText(this, "请开启权限", Toast.LENGTH_SHORT).show();
-            } else {
-                init();
-
-            }
+            if (isDenied) Toast.makeText(this, "请开启权限", Toast.LENGTH_SHORT).show();
+            else init();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private HandlerThread mHandlerThread;
-    private Handler mHandler;
-    private byte[] mNv21Data;
-    private CameraOverlap cameraOverlap;
-    private final Object lockObj = new Object();
-    private SurfaceView mSurfaceView;
-    private EGLUtils mEglUtils;
-    private GLFramebuffer mFramebuffer;
-    private GLFrame mFrame;
-    private GLPoints mPoints;
-    private GLBitmap mBitmap;
-    private SeekBar seekBarA;
-    private SeekBar seekBarB;
-    private SeekBar seekBarC;
-
-    public static byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
-        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
-        int i = 0;
-        for (int x = 0; x < imageWidth; x++) {
-            for (int y = imageHeight - 1; y >= 0; y--) {
-                yuv[i] = data[y * imageWidth + x];
-                i++;
-            }
-        }
-        i = imageWidth * imageHeight * 3 / 2 - 1;
-        for (int x = imageWidth - 1; x > 0; x = x - 2) {
-            for (int y = 0; y < imageHeight / 2; y++) {
-                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
-                i--;
-                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth)
-                        + (x - 1)];
-                i--;
-            }
-        }
-        return yuv;
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        //实现接口必须重写所有方法，不想写也得留空
     }
 
-    private static byte[] rotateYUV420Degree180(byte[] data, int imageWidth, int imageHeight) {
-        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
-        int i = 0;
-        int count = 0;
-        for (i = imageWidth * imageHeight - 1; i >= 0; i--) {
-            yuv[count] = data[i];
-            count++;
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        //判断传感器类别
+        switch (event.sensor.getType()) {
+//            case Sensor.TYPE_ACCELEROMETER: //加速度传感器
+//                final float alpha = (float) 0.8;
+//                gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+//                gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+//                gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+//                float VX = event.values[0] - gravity[0];
+//                float VY = event.values[1] - gravity[1];
+//                float VZ = event.values[2] - gravity[2];
+//                //重力加速度9.81m/s^2，只受到重力作用的情况下，自由下落的加速度
+//                break;
+//            case Sensor.TYPE_GRAVITY://重力传感器
+//                gravity[0] = event.values[0];//单位m/s^2
+//                gravity[1] = event.values[1];
+//                gravity[2] = event.values[2];
+//                break;
+            case Sensor.TYPE_ORIENTATION:
+                gravity[0] = event.values[0];//单位m/s^2
+                gravity[1] = event.values[1];
+                gravity[2] = event.values[2];
+                if(gravity[1]>0) landscape = true;
+                else landscape = false;
+                break;
+            default:
+                break;
         }
-        i = imageWidth * imageHeight * 3 / 2 - 1;
-        for (i = imageWidth * imageHeight * 3 / 2 - 1; i >= imageWidth
-                * imageHeight; i -= 2) {
-            yuv[count++] = data[i - 1];
-            yuv[count++] = data[i];
-        }
-        return yuv;
     }
 
     private void init(){
@@ -202,9 +178,12 @@ public class MainActivity extends AppCompatActivity {
         cameraOverlap.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
+
                 synchronized (lockObj) {
                     System.arraycopy(data, 0, mNv21Data, 0, data.length);
-                    mNv21Data=rotateYUV420Degree90(mNv21Data,cameraOverlap.PREVIEW_WIDTH,cameraOverlap.PREVIEW_HEIGHT);
+                    if(landscape){
+                        mNv21Data=rotateYUV420Degree90(mNv21Data,cameraOverlap.PREVIEW_WIDTH,cameraOverlap.PREVIEW_HEIGHT);
+                    }
                 }
                 mHandler.post(new Runnable() {
                     @Override
@@ -216,10 +195,20 @@ public class MainActivity extends AppCompatActivity {
                         mFrame.setH(seekBarB.getProgress()/360.0f);
                         mFrame.setL(seekBarC.getProgress()/100.0f - 1);
                         if(mTrack106){
-                            mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            if(landscape){
+                                mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            }
+                            else{
+                                mMultiTrack106.FaceTrackingInit(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
+                            }
                             mTrack106 = !mTrack106;
                         }else {
-                            mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            if(landscape){
+                                mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
+                            }
+                            else{
+                                mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
+                            }
                         }
                         boolean rotate270 = cameraOverlap.getOrientation() == 270;
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
@@ -231,14 +220,22 @@ public class MainActivity extends AppCompatActivity {
                             for(int i = 0 ; i < 106 ; i++) {
                                 int x;
                                 int y;
-
-                                if (rotate270) {
-                                    y = r.landmarks[i*2];
-                                }else{
-                                    y = CameraOverlap.PREVIEW_WIDTH-r.landmarks[i*2];
+                                if(landscape){
+                                    if (rotate270) {
+                                        y = r.landmarks[i*2];
+                                    }else{
+                                        y = CameraOverlap.PREVIEW_WIDTH-r.landmarks[i*2];
+                                    }
+                                    x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2+1];
                                 }
-                                x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2+1];
-
+                                else{
+                                    if (rotate270) {
+                                        x = r.landmarks[i*2];
+                                    }else{
+                                        x = CameraOverlap.PREVIEW_HEIGHT-r.landmarks[i*2];
+                                    }
+                                    y = r.landmarks[i*2+1];
+                                }
                                 points[i*2] = view2openglX(x,CameraOverlap.PREVIEW_HEIGHT);
                                 points[i*2+1] = view2openglY(y,CameraOverlap.PREVIEW_WIDTH);
                                 if(i == 70){
@@ -277,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
         mSurfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-
             }
 
             @Override
@@ -299,7 +295,6 @@ public class MainActivity extends AppCompatActivity {
                         cameraOverlap.openCamera(mFramebuffer.getSurfaceTexture());
                     }
                 });
-
             }
 
             @Override
@@ -318,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
             }
         });
         if(mSurfaceView.getHolder().getSurface()!= null &&mSurfaceView.getWidth() > 0){
@@ -343,15 +337,70 @@ public class MainActivity extends AppCompatActivity {
         seekBarB = findViewById(R.id.seek_bar_b);
         seekBarC = findViewById(R.id.seek_bar_c);
     }
+
+    public void InitModelFiles(){
+        String assetPath = "ZeuseesFaceTracking";
+        String sdcardPath = Environment.getExternalStorageDirectory() + File.separator + assetPath;
+        copyFilesFromAssets(this, assetPath, sdcardPath);
+    }
+
+    public void copyFilesFromAssets(Context context, String oldPath, String newPath) {
+        try {
+            String[] fileNames = context.getAssets().list(oldPath);
+            if (fileNames.length > 0) {
+                // directory
+                File file = new File(newPath);
+                if (!file.mkdir()) Log.d("mkdir","can't make folder");
+                for (String fileName : fileNames) copyFilesFromAssets(context, oldPath + "/" + fileName,newPath + "/" + fileName);
+            }
+            else {
+                // file
+                InputStream is = context.getAssets().open(oldPath);
+                FileOutputStream fos = new FileOutputStream(new File(newPath));
+                byte[] buffer = new byte[1024];
+                int byteCount;
+                while ((byteCount = is.read(buffer)) != -1) fos.write(buffer, 0, byteCount);
+                fos.flush();
+                is.close();
+                fos.close();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     private float view2openglX(int x,int width){
         float centerX = width/2.0f;
         float t = x - centerX;
         return t/centerX;
     }
+
     private float view2openglY(int y,int height){
         float centerY = height/2.0f;
         float s = centerY - y;
         return s/centerY;
     }
 
+    public static byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
+        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+        int i = 0;
+        for (int x = 0; x < imageWidth; x++) {
+            for (int y = imageHeight - 1; y >= 0; y--) {
+                yuv[i] = data[y * imageWidth + x];
+                i++;
+            }
+        }
+        i = imageWidth * imageHeight * 3 / 2 - 1;
+        for (int x = imageWidth - 1; x > 0; x = x - 2) {
+            for (int y = 0; y < imageHeight / 2; y++) {
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
+                i--;
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth)
+                        + (x - 1)];
+                i--;
+            }
+        }
+        return yuv;
+    }
 }

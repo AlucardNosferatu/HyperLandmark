@@ -87,21 +87,15 @@ public class CameraOverlap {
 
                 }
                 parameters.setPictureSize(fs.width, fs.height);
-                boolean ori=context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE;
-
-                //ori=false;
-
-                if (ori) {
+                if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
                     parameters.set("orientation", "portrait");
                     parameters.set("rotation", 90);
-
                     int orientation = CameraFacing == Camera.CameraInfo.CAMERA_FACING_FRONT ? 360 - mCameraInfo.orientation : mCameraInfo.orientation;
                     mCamera.setDisplayOrientation(orientation);
 
                 } else {
                     parameters.set("orientation", "landscape");
                     mCamera.setDisplayOrientation(0);
-
                 }
 
                 if(CameraFacing == Camera.CameraInfo.CAMERA_FACING_BACK){
