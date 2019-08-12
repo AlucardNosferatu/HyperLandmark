@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SeekBar seekBarC;
 
     private boolean landscape = false;
-    private float[] gravity = new float[3];
     private SensorManager SM;
 
     @Override
@@ -93,10 +92,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-//        //注册加速度传感器
-//        SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_UI);//采集频率
-//        //注册重力传感器
-//        SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_GRAVITY),SensorManager.SENSOR_DELAY_FASTEST);
         SM.registerListener((SensorEventListener) this,SM.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_FASTEST);
     }
 
@@ -136,26 +131,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         //判断传感器类别
         switch (event.sensor.getType()) {
-//            case Sensor.TYPE_ACCELEROMETER: //加速度传感器
-//                final float alpha = (float) 0.8;
-//                gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-//                gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-//                gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
-//                float VX = event.values[0] - gravity[0];
-//                float VY = event.values[1] - gravity[1];
-//                float VZ = event.values[2] - gravity[2];
-//                //重力加速度9.81m/s^2，只受到重力作用的情况下，自由下落的加速度
-//                break;
-//            case Sensor.TYPE_GRAVITY://重力传感器
-//                gravity[0] = event.values[0];//单位m/s^2
-//                gravity[1] = event.values[1];
-//                gravity[2] = event.values[2];
-//                break;
             case Sensor.TYPE_ORIENTATION:
-                gravity[0] = event.values[0];//单位m/s^2
-                gravity[1] = event.values[1];
-                gravity[2] = event.values[2];
-                if(gravity[1]>0) landscape = true;
+                if(event.values[1]>0) landscape = true;
                 else landscape = false;
                 break;
             default:
