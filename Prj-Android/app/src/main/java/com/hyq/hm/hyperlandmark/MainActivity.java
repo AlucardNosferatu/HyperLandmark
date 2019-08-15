@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zeusee.zmobileapi.STUtils;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public int x;
     public int y;
+    public float x_norm;
+    public float y_norm;
+    public TextView coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void init(){
         InitModelFiles();
+
+        coordinates = findViewById(R.id.coordinates);
         mMultiTrack106 = new FaceTracking("/sdcard/ZeuseesFaceTracking/models");
         cameraOverlap = new CameraOverlap(this);
         mNv21Data = new byte[CameraOverlap.PREVIEW_WIDTH * CameraOverlap.PREVIEW_HEIGHT * 2];
@@ -185,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
                         float[] p = null;
                         float[] points = null;
+                        DecimalFormat decimalFormat=new DecimalFormat("0.00");
                         for (Face r : faceActions) {
                             points = new float[106*2];
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
@@ -200,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         else x = CameraOverlap.PREVIEW_HEIGHT - r.landmarks[i * 2];
                                         y = r.landmarks[i * 2 + 1];
                                     }
+                                    x_norm = (float)x / (float)CameraOverlap.PREVIEW_HEIGHT;
+                                    y_norm = (float)y / (float)CameraOverlap.PREVIEW_WIDTH;
+                                    String x_n=decimalFormat.format(x_norm);
+                                    String y_n=decimalFormat.format(y_norm);
+                                    coordinates.setText("x:"+x_n+"   y:"+y_n);
 
                                     points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
                                     points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
