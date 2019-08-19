@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,11 +67,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public int x;
     public int y;
+    public int h;
+    public int w;
     public float x_norm_left;
     public float y_norm_left;
     public float x_norm_right;
     public float y_norm_right;
-    public float focal_distance;
+    public float face_distance;
+    public float eyes_distance;
+    public float distances_product;
+    public boolean output_distance;
+    public String distance_string;
     public TextView coordinates;
 
     @Override
@@ -152,7 +159,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void init(){
         InitModelFiles();
-
+        face_distance=32;
+        eyes_distance=1;
+        distance_string="";
+        output_distance=false;
+        h=CameraOverlap.PREVIEW_HEIGHT;
+        w=CameraOverlap.PREVIEW_WIDTH;
         coordinates = findViewById(R.id.coordinates);
         mMultiTrack106 = new FaceTracking("/sdcard/ZeuseesFaceTracking/models");
         cameraOverlap = new CameraOverlap(this);
@@ -167,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         cameraOverlap.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
+
                 synchronized (lockObj) {
                     System.arraycopy(data, 0, mNv21Data, 0, data.length);
                     if(landscape){
@@ -190,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             if(landscape) mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_WIDTH,CameraOverlap.PREVIEW_HEIGHT);
                             else mMultiTrack106.Update(mNv21Data,CameraOverlap.PREVIEW_HEIGHT,CameraOverlap.PREVIEW_WIDTH);
                         }
+
                         boolean rotate270 = cameraOverlap.getOrientation() == 270;
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
                         float[] p = null;
@@ -200,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
                             for(int i = 0 ; i < 106 ; i++) {
                                 if(i==72||i==105){
-
                                     if (landscape) {
                                         if (rotate270) y = r.landmarks[i * 2];
                                         else y = CameraOverlap.PREVIEW_WIDTH - r.landmarks[i * 2];
@@ -218,12 +231,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         x_norm_right = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_right = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
                                     }
-                                    focal_distance=Math.abs(x_norm_right-x_norm_left)/7;
-
+                                    eyes_distance=Math.abs(x_norm_left-x_norm_right);
                                     String x_n=decimalFormat.format((x_norm_left+x_norm_right)/2);
                                     String y_n=decimalFormat.format((y_norm_left+y_norm_right)/2);
-                                    coordinates.setText("x:"+x_n+"   y:"+y_n);
-
+                                    if(output_distance){
+                                        face_distance=distances_product/eyes_distance;
+                                        distance_string="   distance:"+face_distance;
+                                    }
+                                    coordinates.setText("x:"+x_n+"   y:"+y_n+distance_string);
                                     points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
                                     points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
                                     if (i == 70) {
@@ -238,6 +253,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                 }
+                                else if(i<=3){
+                                    int a=i-0;
+                                    int b;
+                                    int c;
+                                    switch(a){
+                                        case 0:
+                                            b=1;
+                                            c=1;
+                                            break;
+                                        case 1:
+                                            b=1;
+                                            c=3;
+                                            break;
+                                        case 2:
+                                            b=3;
+                                            c=1;
+                                            break;
+                                        case 3:
+                                            b=3;
+                                            c=3;
+                                            break;
+                                        default:
+                                            b=1;
+                                            c=1;
+                                    }
+                                    points[i*2]=view2openglX(b*h/4, CameraOverlap.PREVIEW_HEIGHT);
+                                    points[i*2+1]=view2openglY(c*w/4, CameraOverlap.PREVIEW_WIDTH);
+                                }
                             }
                             if(p != null){
                                 break;
@@ -249,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             tid = mBitmap.drawFrame();
                         }
                         mFrame.drawFrame(tid,mFramebuffer.drawFrameBuffer(),mFramebuffer.getMatrix());
+
                         if(points != null){
                             mPoints.setPoints(points);
                             mPoints.drawPoints();
@@ -325,6 +369,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         seekBarA = findViewById(R.id.seek_bar_a);
         seekBarB = findViewById(R.id.seek_bar_b);
         seekBarC = findViewById(R.id.seek_bar_c);
+    }
+
+    public void onCalibrate(View view){
+        distances_product=eyes_distance*face_distance;
+        output_distance=true;
     }
 
     public void InitModelFiles(){

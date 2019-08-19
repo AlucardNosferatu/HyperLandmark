@@ -19,6 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <Button
+            android:id="@+id/Calibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onCalibrate"
+            android:text="Button" />
+
     </com.hyq.hm.hyperlandmark.FixedAspectRatioRelativeLayout>
     <SeekBar
         android:id="@+id/seek_bar_a"
