@@ -27,7 +27,6 @@ import android.view.SurfaceView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.zeusee.zmobileapi.STUtils;
 
 import java.io.File;
@@ -67,8 +66,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public int x;
     public int y;
-    public float x_norm;
-    public float y_norm;
+    public float x_norm_left;
+    public float y_norm_left;
+    public float x_norm_right;
+    public float y_norm_right;
+    public float focal_distance;
     public TextView coordinates;
 
     @Override
@@ -208,10 +210,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         else x = CameraOverlap.PREVIEW_HEIGHT - r.landmarks[i * 2];
                                         y = r.landmarks[i * 2 + 1];
                                     }
-                                    x_norm = (float)x / (float)CameraOverlap.PREVIEW_HEIGHT;
-                                    y_norm = (float)y / (float)CameraOverlap.PREVIEW_WIDTH;
-                                    String x_n=decimalFormat.format(x_norm);
-                                    String y_n=decimalFormat.format(y_norm);
+                                    if(i==72) {
+                                        x_norm_left = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
+                                        y_norm_left = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
+                                    }
+                                    else if(i==105){
+                                        x_norm_right = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
+                                        y_norm_right = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
+                                    }
+                                    focal_distance=Math.abs(x_norm_right-x_norm_left)/7;
+
+                                    String x_n=decimalFormat.format((x_norm_left+x_norm_right)/2);
+                                    String y_n=decimalFormat.format((y_norm_left+y_norm_right)/2);
                                     coordinates.setText("x:"+x_n+"   y:"+y_n);
 
                                     points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
