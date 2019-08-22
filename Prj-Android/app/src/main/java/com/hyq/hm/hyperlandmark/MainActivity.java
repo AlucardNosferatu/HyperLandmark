@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public double sensorWidth;
     public CameraManager CM;
     public Size size;
+    public float[] points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,11 +172,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void init(){
         CM=(CameraManager)getSystemService(CAMERA_SERVICE);
+        points = new float[4];
         InitModelFiles();
         sensorHeight=0;
         sensorWidth=0;
         face_distance=32;
-        eyes_distance=60;
+        eyes_distance=70;
         distance_string="";
         output_distance=false;
         h=CameraOverlap.PREVIEW_HEIGHT;
@@ -226,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         boolean rotate270 = cameraOverlap.getOrientation() == 270;
                         List<Face> faceActions = mMultiTrack106.getTrackingInfo();
                         float[] p = null;
-                        float[] points = null;
+                        //float[] points = null;
                         DecimalFormat decimalFormat=new DecimalFormat("0.00");
                         for (Face r : faceActions) {
-                            points = new float[106*2];
+                            //points = new float[106*2];
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
                             for(int i = 0 ; i < 106 ; i++) {
                                 if(i==72||i==105){
@@ -245,10 +247,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     if(i==72) {
                                         x_norm_left = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_left = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
+                                        points[0] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                        points[1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                     else if(i==105){
                                         x_norm_right = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_right = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
+                                        points[2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                        points[3] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                     //eyes_distance=Math.abs(x_norm_left-x_norm_right);
                                     String x_n=decimalFormat.format((x_norm_left+x_norm_right)/2);
@@ -265,8 +271,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     }
 
                                     coordinates.setText("x:"+x_n+"   y:"+y_n+distance_string);
-                                    points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
-                                    points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+                                    //points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                    //points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+
                                     if (i == 70) {
                                         p = new float[8];
                                         p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
@@ -279,47 +286,47 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                 }
-                                else if(i<=3){
-                                    int a=i-0;
-                                    int b;
-                                    int c;
-                                    switch(a){
-                                        case 0:
-                                            b=1;
-                                            c=1;
-                                            break;
-                                        case 1:
-                                            b=1;
-                                            c=3;
-                                            break;
-                                        case 2:
-                                            b=3;
-                                            c=1;
-                                            break;
-                                        case 3:
-                                            b=3;
-                                            c=3;
-                                            break;
-                                        default:
-                                            b=1;
-                                            c=1;
-                                    }
-                                    points[i*2]=view2openglX(b*h/4, CameraOverlap.PREVIEW_HEIGHT);
-                                    points[i*2+1]=view2openglY(c*w/4, CameraOverlap.PREVIEW_WIDTH);
-                                }
+//                                else if(i<=3){
+//                                    int a=i-0;
+//                                    int b;
+//                                    int c;
+//                                    switch(a){
+//                                        case 0:
+//                                            b=1;
+//                                            c=1;
+//                                            break;
+//                                        case 1:
+//                                            b=1;
+//                                            c=3;
+//                                            break;
+//                                        case 2:
+//                                            b=3;
+//                                            c=1;
+//                                            break;
+//                                        case 3:
+//                                            b=3;
+//                                            c=3;
+//                                            break;
+//                                        default:
+//                                            b=1;
+//                                            c=1;
+//                                    }
+//                                    points[i*2]=view2openglX(b*h/4, CameraOverlap.PREVIEW_HEIGHT);
+//                                    points[i*2+1]=view2openglY(c*w/4, CameraOverlap.PREVIEW_WIDTH);
+//                                }
                             }
                             if(p != null){
                                 break;
                             }
                         }
                         int tid = 0;
-                        if(p != null){
-                            mBitmap.setPoints(p);
-                            tid = mBitmap.drawFrame();
-                        }
+//                        if(p != null){
+//                            mBitmap.setPoints(p);
+//                            tid = mBitmap.drawFrame();
+//                        }
                         mFrame.drawFrame(tid,mFramebuffer.drawFrameBuffer(),mFramebuffer.getMatrix());
 
-                        if(points != null){
+                        if((points != null)&&(points[0]*points[1]*points[2]*points[3]!=0)){
                             mPoints.setPoints(points);
                             mPoints.drawPoints();
                         }
