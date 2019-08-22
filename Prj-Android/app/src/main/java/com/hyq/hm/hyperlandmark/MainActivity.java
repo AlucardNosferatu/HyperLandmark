@@ -12,6 +12,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLES20;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -22,6 +25,8 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
+
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -79,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean output_distance;
     public String distance_string;
     public TextView coordinates;
+    public double focalLength;
+    public float horizontalViewAngle;
+    public float verticalViewAngle;
+    public double sensorHeight;
+    public double sensorWidth;
+    public CameraManager CM;
+    public Size size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,9 +170,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void init(){
+        CM=(CameraManager)getSystemService(CAMERA_SERVICE);
         InitModelFiles();
+        sensorHeight=0;
+        sensorWidth=0;
         face_distance=32;
-        eyes_distance=1;
+        eyes_distance=60;
         distance_string="";
         output_distance=false;
         h=CameraOverlap.PREVIEW_HEIGHT;
@@ -178,8 +193,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mHandler = new Handler(mHandlerThread.getLooper());
         cameraOverlap.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
-            public void onPreviewFrame(byte[] data, Camera camera) {
-
+            public void onPreviewFrame(byte[] data, final Camera camera) {
+                focalLength=camera.getParameters().getFocalLength();
+                verticalViewAngle=camera.getParameters().getVerticalViewAngle();
+                horizontalViewAngle=camera.getParameters().getHorizontalViewAngle();
+                sensorHeight=Math.tan(3.14*(0.5*horizontalViewAngle)/180)*focalLength;
+                sensorWidth=Math.tan(3.14*(0.5*verticalViewAngle)/180)*focalLength;
                 synchronized (lockObj) {
                     System.arraycopy(data, 0, mNv21Data, 0, data.length);
                     if(landscape){
@@ -231,13 +250,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                         x_norm_right = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_right = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
                                     }
-                                    eyes_distance=Math.abs(x_norm_left-x_norm_right);
+                                    //eyes_distance=Math.abs(x_norm_left-x_norm_right);
                                     String x_n=decimalFormat.format((x_norm_left+x_norm_right)/2);
                                     String y_n=decimalFormat.format((y_norm_left+y_norm_right)/2);
                                     if(output_distance){
-                                        face_distance=distances_product/eyes_distance;
-                                        distance_string="   distance:"+face_distance;
+                                        //face_distance=distances_product/eyes_distance;
+                                        //distance_string="   distance:"+face_distance;
+                                        double realDistance_x=Math.abs(x_norm_left-x_norm_right)*2*sensorWidth;
+                                        double realDistance_y=Math.abs(y_norm_left-y_norm_right)*2*sensorHeight;
+                                        double realDistance=Math.sqrt(Math.pow(realDistance_x,2)+Math.pow(realDistance_y,2));
+                                        realDistance=eyes_distance*focalLength/realDistance;
+                                        String rd=decimalFormat.format(realDistance);
+                                        distance_string="   distance:"+rd;
                                     }
+
                                     coordinates.setText("x:"+x_n+"   y:"+y_n+distance_string);
                                     points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
                                     points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
@@ -372,7 +398,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void onCalibrate(View view){
-        distances_product=eyes_distance*face_distance;
+        //distances_product=eyes_distance*face_distance;
+
+        try {
+            CameraCharacteristics CC = CM.getCameraCharacteristics(CM.getCameraIdList()[1]);
+            size=CC.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE);
+        }
+        catch(CameraAccessException e){
+            Log.e("GSSize has been fucked:", e.getMessage(), e);
+        }
         output_distance=true;
     }
 
