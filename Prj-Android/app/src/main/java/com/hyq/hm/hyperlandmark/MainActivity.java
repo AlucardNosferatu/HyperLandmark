@@ -231,10 +231,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         //float[] points = null;
                         DecimalFormat decimalFormat=new DecimalFormat("0.00");
                         for (Face r : faceActions) {
-                            //points = new float[106*2];
+                            points = new float[106*2];
                             Rect rect=new Rect(CameraOverlap.PREVIEW_HEIGHT - r.left,r.top,CameraOverlap.PREVIEW_HEIGHT - r.right,r.bottom);
                             for(int i = 0 ; i < 106 ; i++) {
-                                if(i==72||i==105){
+//                                if(i==72||i==105){
                                     if (landscape) {
                                         if (rotate270) y = r.landmarks[i * 2];
                                         else y = CameraOverlap.PREVIEW_WIDTH - r.landmarks[i * 2];
@@ -247,14 +247,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     if(i==72) {
                                         x_norm_left = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_left = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
-                                        points[0] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
-                                        points[1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+//                                        points[0] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+//                                        points[1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+                                        points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                        points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                     else if(i==105){
                                         x_norm_right = (float) x / (float) CameraOverlap.PREVIEW_HEIGHT;
                                         y_norm_right = (float) y / (float) CameraOverlap.PREVIEW_WIDTH;
-                                        points[2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
-                                        points[3] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+//                                        points[2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+//                                        points[3] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+                                        points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                        points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
                                     }
                                     //eyes_distance=Math.abs(x_norm_left-x_norm_right);
                                     String x_n=decimalFormat.format((x_norm_left+x_norm_right)/2);
@@ -274,18 +278,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     //points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
                                     //points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
 
-                                    if (i == 70) {
-                                        p = new float[8];
-                                        p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
-                                        p[1] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
-                                        p[2] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
-                                        p[3] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
-                                        p[4] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
-                                        p[5] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
-                                        p[6] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
-                                        p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
-                                    }
-                                }
+//                                    if (i == 70) {
+//                                        p = new float[8];
+//                                        p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+//                                        p[1] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+//                                        p[2] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+//                                        p[3] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+//                                        p[4] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+//                                        p[5] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
+//                                        p[6] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+//                                        p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
+//                                    }
+//                                }
 //                                else if(i<=3){
 //                                    int a=i-0;
 //                                    int b;
@@ -320,13 +324,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             }
                         }
                         int tid = 0;
-//                        if(p != null){
-//                            mBitmap.setPoints(p);
-//                            tid = mBitmap.drawFrame();
-//                        }
+                        if(p != null){
+                            mBitmap.setPoints(p);
+                            tid = mBitmap.drawFrame();
+                        }
                         mFrame.drawFrame(tid,mFramebuffer.drawFrameBuffer(),mFramebuffer.getMatrix());
 
-                        if((points != null)&&(points[0]*points[1]*points[2]*points[3]!=0)){
+//                        if((points != null)&&(points[0]*points[1]*points[2]*points[3]!=0)){
+                          if(points != null){
                             mPoints.setPoints(points);
                             mPoints.drawPoints();
                         }
