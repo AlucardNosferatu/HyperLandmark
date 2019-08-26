@@ -1,0 +1,1 @@
+vec4 AS_F() {return texture2D(u_F, v_T);}

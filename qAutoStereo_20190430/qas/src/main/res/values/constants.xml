@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appId">com.tdim.qas</string>
+    <string name="qLicHeader">QLIC</string>
+    <string name="calibIO">qASCalibration</string>
+    <string name="pref_hor_pitch">hPitch</string>
+    <string name="pref_ver_pitch">vPitch</string>
+    <string name="pref_pixel_geom">pixelGeom</string>
+    <string name="pref_cam_quality">camResolution</string>
+    <string name="pref_angle_error">adjustAngle</string>
+    <string name="pref_view_offset">adjustView</string>
+</resources>

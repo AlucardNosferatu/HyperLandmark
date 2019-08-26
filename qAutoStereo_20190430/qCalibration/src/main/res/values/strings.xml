@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">qCalibration</string>
+
+    <string name="license_checking">Checking for License…</string>
+    <string name="license_activated">Activated</string>
+    <string name="license_demo">Demo Version</string>
+    <string name="license_locked">Application Locked</string>
+
+    <string name="button_save">Save</string>
+    <string name="button_import">Import</string>
+    <string name="key_value">Value:</string>
+    <string name="key_step">Step:</string>
+    <string name="button_decrement">-</string>
+    <string name="button_increment">+</string>
+    <string name="button_subtract">-</string>
+    <string name="button_add">+</string>
+    <string name="button_pixgeom">Pixel Geometry</string>
+    <string name="buttonRotate">Rotate</string>
+    <string name="param_hpitch">HPitch</string>
+    <string name="param_vpitch">VPitch</string>
+    <string name="param_pitch">Pitch</string>
+    <string name="param_angle">Angle</string>
+    <string name="render_angle">Angle</string>
+    <string name="render_bars">Lines</string>
+    <string name="render_colors">Gradient</string>
+    <string name="render_rainbow">Rainbow</string>
+    <string name="render_picture">Picture</string>
+    <string name="render_distance">Distance</string>
+    <string name="eye_pos_coef">Eye pos coef</string>
+    <string name="error_save">Could not save file</string>
+    <string name="title_save">Save Configuration</string>
+    <string name="button_sharesave">Share</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="info_savepath">Saved to path %1</string>
+    <string name="app_skype">Skype</string>
+    <string name="app_whatsapp">Whatsapp</string>
+    <string name="app_wechat">WeChat</string>
+    <string name="action_share">Share</string>
+    <string name="license_timeleft">(%1 hours left)</string>
+    <string name="pg_description">Pixel pattern</string>
+    <string name="button_close">Close</string>
+    <string name="title_pgmanagement">Manage custom pixel geometries</string>
+    <string name="info_newpatterns">Added %1 patterns</string>
+    <string name="info_nonewpatterns">No new patterns found</string>
+    <string name="prompt_delete_pattern">Delete pattern %1?</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="title_delete">Delete entry</string>
+    <string name="button_switch">Switch</string>
+</resources>

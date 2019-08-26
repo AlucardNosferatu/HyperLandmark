@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.tdim.qas.ASCalibrationView
+        android:id="@+id/calib"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutControl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonRender"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:onClick="onPressRenderMode" />
+
+            <Button
+                android:id="@+id/buttonParam"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:onClick="onPressParam" />
+
+            <Button
+                android:id="@+id/buttonSwitch"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:onClick="onPressSwitch"
+                android:text="@string/button_switch" />
+
+            <LinearLayout
+                android:id="@+id/layoutDistanceInfo"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textFace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textSize="12sp"
+                    android:text="" />
+
+                <TextView
+                    android:id="@+id/textDistanceData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textSize="12sp"
+                    android:text="" />
+
+                <com.tdim.qas.ASAdjustmentView
+                    android:id="@+id/adjust"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/buttonOrient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onPressOrientation"
+                android:text="@string/buttonRotate" />
+
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPressSave"
+                android:text="@string/button_save" />
+
+            <Button
+                android:id="@+id/buttonImport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPressImport"
+                android:text="@string/button_import" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/tableControl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/calib"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="end">
+
+            <ImageButton
+                android:id="@+id/buttonPixgeom"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:contentDescription="@string/button_pixgeom"
+                android:onClick="onPressPixelGeometry"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_fullpixel" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/buttonDec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPressDecrement"
+                android:text="@string/button_decrement"
+                app:layout_constraintBottom_toTopOf="@+id/buttonSub"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textStep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/key_step"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textStyle="bold"
+                android:background="@color/colorHalfTransparentBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonDec"
+                app:layout_constraintStart_toEndOf="@+id/buttonDec"
+                app:layout_constraintTop_toTopOf="@+id/buttonDec" />
+
+            <TextView
+                android:id="@+id/paramStep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textStyle="bold"
+                android:background="@color/colorHalfTransparentBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonDec"
+                app:layout_constraintEnd_toStartOf="@+id/buttonInc"
+                app:layout_constraintStart_toEndOf="@+id/textStep"
+                app:layout_constraintTop_toTopOf="@+id/buttonDec" />
+
+            <Button
+                android:id="@+id/buttonInc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPressIncrement"
+                android:text="@string/button_increment"
+                app:layout_constraintBottom_toTopOf="@+id/buttonAdd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/buttonDec"
+                app:layout_constraintVertical_bias="1.0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/buttonSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_subtract"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/key_value"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textStyle="bold"
+                android:background="@color/colorHalfTransparentBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonSub"
+                app:layout_constraintStart_toEndOf="@+id/buttonSub"
+                app:layout_constraintTop_toTopOf="@+id/buttonSub" />
+
+            <TextView
+                android:id="@+id/paramValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textStyle="bold"
+                android:background="@color/colorHalfTransparentBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonSub"
+                app:layout_constraintEnd_toStartOf="@+id/buttonAdd"
+                app:layout_constraintStart_toEndOf="@+id/textValue"
+                app:layout_constraintTop_toTopOf="@+id/buttonSub"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/buttonAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_add"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/buttonSub"
+                app:layout_constraintVertical_bias="1.0" />
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,148 @@
+Add a com.tdim.qas.ASPlaybackView into your layout xml
+
+It uses the following enum values:
+
+com.tdim.qas.ASConstants.InputFormat {
+	/**
+	 * Media is 2D.
+	 */
+	None,
+	
+	/**
+	 * Media shows two views, in the left and right half of the frame.
+	 */
+	SBS, 
+	
+	/**
+	 * Media shows two views, in the top and botom half of the frame.
+	 */
+	TB,
+}
+com.tdim.qas.ASConstants.SubpixelOrder {
+	/**
+	 * Fullpixel.
+	 */
+	None,
+	
+	/**
+	 * Pixel has 3 vertical RGB stripes, taking up 1/3 of the space each.
+	 */
+	LCD,
+	
+	/**
+	 * Pixel has triangular subpixels, with shared R and B.
+	 */	
+	OLED,
+}
+
+It exposes the following interface:
+
+public interface PlaybackListener {
+	/**
+	 * Called after ASPlaybackView.setVideo, when the player has prepared the video.
+	 */
+	void onPrepared();
+	
+	/**
+	 * Called when new frame is ready.
+	 * @param ms Timestamp of the current frame in milliseconds
+	 */
+	void onProgressUpdate(int ms);
+	
+	/**
+	 * Called when the video has finished playing.
+	 */
+	void onFinished();
+}
+
+It hat the following methods:
+
+/**
+ * Set listener for playback events.
+ * @param listener Listener to be informed of playback events.
+ */
+public void setPlaybackListener(PlaybackListener listener)
+
+/**
+ * Set Image to show on screen. Configure 3D format with setInputFormat.
+ * @param bmp Image to show
+ */
+public void setImage(Bitmap bmp)
+
+/**
+ * Set Video to load. Will be prepared asynchronously, set a PlaybackListener to be informed
+ * when the player is ready. getCurrentPos and getDuration are only available when the player
+ * is prepared.
+ * Requires call to play() before playback starts.
+ * Configure 3D format with setInputFormat.
+ * @param uri Uri to the video to load.
+ */
+public void setVideo(Uri uri)
+
+/**
+ * Set 3D format of the picture/video. If you do not set the format when changing the media,
+ * the current format will be used. The initial format is InputFormat.None
+ * @param format Input format of the picture/video.
+ */
+public void setInputFormat(ASConstants.InputFormat format)
+
+/**
+ * Whether to render in 3D or 2D.
+ * @param use3D true if media should be rendered for autostereoscopy, false to show in 2D.
+ */
+public void set3DMode(boolean use3D)
+
+/**
+ * Parameters of the display filter. NOTE: this method will change while we are researching
+ * the OLED pixel geometry!
+ * @param h horizontal pitch = lenticular periods divided by pixels in horizontal direction.
+ * @param v vertical pitch = lenticular periods divided by pixels in vertical direction.
+ * @param spo subpixel geometry of the display.
+ */
+public void setDisplayParameter(float h, float v, ASConstants.SubpixelOrder spo)
+
+/**
+ * Start playing a new video or resume playback after call to pause().
+ */
+public void play()
+
+/**
+ * Pause playback. While the player is paused, the frame will not be updated, but rendering
+ * parameter changes will be visible (setInputFormat, set3DMode, setDisplayParameter). Resume
+ * with play().
+ */
+public void pause()
+
+/**
+ * Stop video playback completely. After the player is stopped, the frame will not be updated,
+ * and rendering parameter changes will be not be visible (setInputFormat, set3DMode,
+ * setDisplayParameter). Use setImage to change image or setVideo and play().
+ */
+public void stop()
+
+/**
+ * Check if a video player is currently playing.
+ * @return true if a video is playing, false if it is paused or there is no active video.
+ */
+public boolean isPlaying()
+
+/**
+ * Seek to a different position when playing a video. Requires player to be in prepared state
+ * (wait for PlaybackListener.onPrepared after setVideo).
+ * @param msec Position in milliseconds
+ */
+public void seekTo(int msec)
+
+/**
+ * Get duration of the current video. Requires player to be in prepared state
+ * (wait for PlaybackListener.onPrepared after setVideo).
+ * @return Duration in milliseconds of the current video, 0 if there is no video playing.
+ */
+public int getDuration()
+
+/**
+ * Get position of the current video. Requires player to be in prepared state
+ * (wait for PlaybackListener.onPrepared after setVideo).
+ * @return Position in milliseconds of the current video, 0 if there is no video playing.
+ */
+public int getCurrentPos() 
