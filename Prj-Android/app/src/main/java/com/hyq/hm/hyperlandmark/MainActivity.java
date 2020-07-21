@@ -275,20 +275,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                     }
 
                                     coordinates.setText("x:"+x_n+"   y:"+y_n+distance_string);
-                                    //points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
-                                    //points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
+                                    points[i * 2] = view2openglX(x, CameraOverlap.PREVIEW_HEIGHT);
+                                    points[i * 2 + 1] = view2openglY(y, CameraOverlap.PREVIEW_WIDTH);
 
-//                                    if (i == 70) {
-//                                        p = new float[8];
-//                                        p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
-//                                        p[1] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
-//                                        p[2] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
-//                                        p[3] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
-//                                        p[4] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
-//                                        p[5] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
-//                                        p[6] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
-//                                        p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
-//                                    }
+                                    if (i == 70) {
+                                        p = new float[8];
+                                        p[0] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[1] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[2] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[3] = view2openglY(y - 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[4] = view2openglX(x + 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[5] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
+                                        p[6] = view2openglX(x - 20, CameraOverlap.PREVIEW_HEIGHT);
+                                        p[7] = view2openglY(y + 20, CameraOverlap.PREVIEW_WIDTH);
+                                    }
 //                                }
 //                                else if(i<=3){
 //                                    int a=i-0;

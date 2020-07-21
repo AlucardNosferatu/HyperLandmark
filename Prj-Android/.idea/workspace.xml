@@ -11,6 +11,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3b82381-3671-490e-adc4-6fc995e41976" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -20,7 +21,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.1.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_lifecycle_runtime_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__android_arch_lifecycle_runtime_1_0_0_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_animated_vector_drawable_26_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_animated_vector_drawable_26_1_0_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_appcompat_v7_26_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_appcompat_v7_26_1_0_aar.xml" afterDir="false" />
@@ -36,10 +37,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_espresso_espresso_idling_resource_3_0_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_espresso_espresso_idling_resource_3_0_2_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_monitor_1_0_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_monitor_1_0_2_aar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_runner_1_0_2_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_android_support_test_runner_1_0_2_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/GLPoints.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/GLPoints.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
@@ -49,6 +48,11 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="WTK7N16923009352" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -63,31 +67,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-955">
-              <caret line="260" column="56" selection-start-line="260" selection-start-column="56" selection-end-line="260" selection-end-column="56" />
+            <state relative-caret-position="244">
+              <caret line="333" selection-start-line="333" selection-end-line="333" />
               <folding>
-                <element signature="e#6708#15878#0" expanded="true" />
-                <element signature="e#7586#15852#0" expanded="true" />
-                <element signature="e#15851#15852#0" expanded="true" />
-                <element signature="e#15877#15878#0" expanded="true" />
-                <element signature="e#16827#17070#0" />
-                <element signature="e#17076#18163#0" />
-                <element signature="e#18169#18312#0" />
-                <element signature="e#18318#18463#0" />
-                <element signature="e#18469#19291#0" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#6708#16950#0" expanded="true" />
+                <element signature="e#7586#16924#0" expanded="true" />
+                <element signature="e#16923#16924#0" expanded="true" />
+                <element signature="e#16949#16950#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/GLPoints.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="605">
-              <caret line="65" column="48" selection-start-line="65" selection-start-column="48" selection-end-line="65" selection-end-column="48" />
+            <state relative-caret-position="244">
+              <caret line="64" column="56" lean-forward="true" selection-start-line="64" selection-start-column="56" selection-end-line="64" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -95,7 +95,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/CameraOverlap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1135">
+            <state relative-caret-position="-209">
               <caret line="12" selection-start-line="12" selection-end-line="14" selection-end-column="3" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -142,10 +142,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="330" />
-    <option name="y" value="397" />
-    <option name="width" value="1364" />
-    <option name="height" value="668" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="978" />
+    <option name="height" value="1098" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -153,51 +153,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="com" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="hyperlandmark" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="hyperlandmark" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="hyperlandmark" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="tracking" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
             <path>
               <item name="Prj-Android" type="1abcf292:AndroidViewProjectNode" />
               <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
@@ -206,13 +164,18 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="WTK7N16923009352" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-07-21T09:35:06.922Z" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="device.picker.selection" value="3f3f5573" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../HyperLandmark_backup/HyperLandmark_ori/Prj-Android" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.25412542" />
@@ -320,10 +283,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.08899945" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.08847185" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -334,11 +298,11 @@
       <window_info anchor="bottom" id="Run" order="0" sideWeight="0.49960256" weight="0.3299532" />
       <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.49801272" weight="0.32917318" />
       <window_info anchor="bottom" id="TODO" order="2" sideWeight="0.49960256" weight="0.3299532" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.654213" visible="true" weight="0.3322933" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.654213" weight="0.3322933" />
       <window_info anchor="bottom" id="Terminal" order="4" sideWeight="0.4916534" weight="0.32371294" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.34578696" side_tool="true" visible="true" weight="0.3322933" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.34651473" side_tool="true" visible="true" weight="0.3297587" />
       <window_info anchor="bottom" id="Version Control" order="6" sideWeight="0.49920508" weight="0.3299532" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.3962639" weight="0.4095164" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.39544237" weight="0.4463807" />
       <window_info anchor="bottom" id="Find" order="8" sideWeight="0.49920508" weight="0.3299532" />
       <window_info anchor="bottom" id="Android Profiler" order="9" sideWeight="0.49880764" weight="0.32917318" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
@@ -463,7 +427,7 @@
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-26/android/os/Looper.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/CameraOverlap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1135">
+        <state relative-caret-position="-209">
           <caret line="12" selection-start-line="12" selection-end-line="14" selection-end-column="3" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -473,28 +437,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/GLPoints.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
-          <caret line="65" column="48" selection-start-line="65" selection-start-column="48" selection-end-line="65" selection-end-column="48" />
+        <state relative-caret-position="244">
+          <caret line="333" selection-start-line="333" selection-end-line="333" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#6708#16950#0" expanded="true" />
+            <element signature="e#7586#16924#0" expanded="true" />
+            <element signature="e#16923#16924#0" expanded="true" />
+            <element signature="e#16949#16950#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/hyq/hm/hyperlandmark/GLPoints.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-955">
-          <caret line="260" column="56" selection-start-line="260" selection-start-column="56" selection-end-line="260" selection-end-column="56" />
-          <folding>
-            <element signature="e#6708#15878#0" expanded="true" />
-            <element signature="e#7586#15852#0" expanded="true" />
-            <element signature="e#15851#15852#0" expanded="true" />
-            <element signature="e#15877#15878#0" expanded="true" />
-            <element signature="e#16827#17070#0" />
-            <element signature="e#17076#18163#0" />
-            <element signature="e#18169#18312#0" />
-            <element signature="e#18318#18463#0" />
-            <element signature="e#18469#19291#0" />
-          </folding>
+        <state relative-caret-position="244">
+          <caret line="64" column="56" lean-forward="true" selection-start-line="64" selection-start-column="56" selection-end-line="64" selection-end-column="56" />
         </state>
       </provider>
     </entry>
